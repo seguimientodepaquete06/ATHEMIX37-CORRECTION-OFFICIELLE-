@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>ATHEMIX37 ESPACE CRÉATION</title>
+  <!-- Intégration de PDF.js pour la gestion et l'affichage des PDF importés -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  </script>
+  <style>
+    :root {
+      --bg-color: #eef2f6;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+      --shadow-dark: #cbd5e1;
+      --accent-primary: #2563eb;
+      --paper-bg: #ffffff;
+      --paper-line: #cbd5e1;
+      
+      --panel-bg: #111111;
+      --panel-card: #1c1c1c;
+      --panel-border: #2a2a2a;
+      --panel-text: #e2e8f0;
+      --panel-accent: #f59e0b;
+    }
+
+    [data-theme="mint"] {
+      --bg-color: #e6f4ea;
+      --card-bg: #f3f9f4;
+      --text-color: #14532d;
+      --shadow-dark: #c2e0cb;
+      --accent-primary: #059669;
+    }
+
+    [data-theme="lavender"] {
+      --bg-color: #f3e8ff;
+      --card-bg: #f9f5ff;
+      --text-color: #4c1d95;
+      --shadow-dark: #ddd6fe;
+      --accent-primary: #7c3aed;
+    }
+
+    [data-theme="sand"] {
+      --bg-color: #fef3c7;
+      --card-bg: #fffbeb;
+      --text-color: #78350f;
+      --shadow-dark: #fde68a;
+      --accent-primary: #d97706;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease;
+      overflow: hidden;
+    }
+
+    header {
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .burger-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: var(--card-bg);
+      box-shadow: 2px 2px 6px var(--shadow-dark);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .burger-btn span {
+      width: 20px;
+      height: 3px;
+      background: var(--accent-primary);
+      border-radius: 2px;
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-color);
+      letter-spacing: 0.5px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .zoom-controls {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-color);
+      padding: 4px;
+      border-radius: 8px;
+      align-items: center;
+    }
+
+    .zoom-btn {
+      border: none;
+      background: var(--card-bg);
+      color: var(--text-color);
+      font-weight: bold;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 1px 1px 3px var(--shadow-dark);
+    }
+
+    .zoom-display {
+      font-size: 0.8rem;
+      font-weight: 700;
+      min-width: 45px;
+      text-align: center;
+    }
+
+    /* Style spécifique amélioré pour la variable x spéciale */
+    .variable-x-speciale {
+      font-family: 'Cambria Math', 'STIX General', 'Latin Modern Math', 'Times New Roman', serif;
+      font-style: italic;
+      font-weight: normal;
+      display: inline-block;
+      padding: 0 2px;
+    }
+
+    /* Bloc de la variable x déplaçable (comme demandé) */
+    .workspace-top-bar {
+      position: absolute;
+      top: 100px;
+      left: 100px;
+      width: 320px;
+      background: var(--card-bg);
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 250;
+      user-select: none;
+      border: 1px solid var(--shadow-dark);
+      cursor: move;
+    }
+
+    .workspace-top-bar-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .color-selector-group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .color-select-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .color-select-btn.black {
+      background-color: #0f172a;
+    }
+
+    .color-select-btn.blue {
+      background-color: var(--accent-primary);
+    }
+
+    .color-select-btn.active {
+      border-color: #f59e0b;
+      transform: scale(1.1);
+    }
+
+    .btn-inserer-x {
+      background: var(--accent-primary);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 4px var(--shadow-dark);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease;
+    }
+
+    .btn-inserer-x:active {
+      transform: scale(0.96);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -380px;
+      width: 350px;
+      height: 100vh;
+      background: var(--card-bg);
+      box-shadow: 6px 0 20px rgba(0,0,0,0.2);
+      z-index: 2000;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 20px 18px 40px 18px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .sidebar.open { left: 0; }
+
+    .menu-group {
+      background: var(--bg-color);
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 4px solid var(--accent-primary);
+    }
+
+    .menu-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-title-toggle {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .btn-3d {
+      width: 100%;
+      border: none;
+      background: var(--card-bg);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-color);
+      cursor: pointer;
+      box-shadow: 2px 2px 4px var(--shadow-dark);
+      margin-bottom: 6px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-inline-group {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .btn-inline-group .btn-3d {
+      justify-content: center;
+      margin-bottom: 0;
+      text-align: center;
+    }
+
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .color-picker-row input[type="color"] {
+      border: none;
+      width: 45px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .custom-select, .custom-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1.5px solid var(--accent-primary);
+      background: var(--card-bg);
+      color: var(--text-color);
+      font-weight: 600;
+      font-size: 0.88rem;
+      outline: none;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .shapes-accordion-content {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .shapes-accordion-content.open {
+      display: grid;
+    }
+
+    .shape-card-item {
+      background: var(--card-bg);
+      border: 1px solid var(--shadow-dark);
+      border-radius: 8px;
+      padding: 8px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 1px 1px 3px var(--shadow-dark);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .shape-card-item:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      background: var(--bg-color);
+    }
+
+    .shape-card-item.active {
+      border-color: var(--accent-primary);
+      background: var(--accent-primary);
+      color: #ffffff;
+    }
+
+    .shape-card-icon {
+      font-size: 1.2rem;
+    }
+
+    .text-frame-rect { border: 2px solid var(--accent-primary); padding: 2px 6px; border-radius: 4px; display: inline-block; }
+    .text-frame-solid { border: 1px solid #0f172a; padding: 2px 6px; display: inline-block; }
+    .text-frame-dashed { border: 2px dashed #0f172a; padding: 2px 6px; display: inline-block; }
+    .text-frame-dotted { border: 2px dotted #0f172a; padding: 2px 6px; display: inline-block; }
+    .text-double-solid { border-bottom: 3px double #0f172a; padding-bottom: 1px; }
+    .text-double-dashed { border-bottom: 3px dashed #0f172a; padding-bottom: 1px; }
+    .text-double-interrupted { border-bottom: 3px dotted #0f172a; padding-bottom: 1px; }
+
+    .zoom-viewport {
+      flex: 1;
+      width: 100%;
+      overflow: auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      touch-action: manipulation;
+    }
+
+    .workspace-scaler {
+      transform-origin: top center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 794px;
+      position: relative;
+      padding-top: 40px;
+    }
+
+    .a4-container {
+      position: relative;
+      width: 794px;
+      min-height: 1123px;
+      background-color: var(--paper-bg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      border-radius: 2px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .a4-container.lined {
+      background-image: linear-gradient(var(--paper-line) 1px, transparent 1px);
+      background-size: 100% 28px;
+    }
+
+    .a4-container.blank { background-image: none; }
+
+    .math-frac {
+      display: inline-flex;
+      flex-direction: column;
+      vertical-align: middle;
+      text-align: center;
+      margin: 0 4px;
+      padding: 2px;
+      border: 1px dashed transparent;
+      cursor: text;
+    }
+    .math-frac:hover { border-color: var(--accent-primary); }
+    .math-num { border-bottom: 1.5px solid #0f172a; padding: 0 4px; outline: none; min-width: 20px; display: inline-block; }
+    .math-den { padding: 0 4px; outline: none; min-width: 20px; display: inline-block; }
+
+    .inserted-table-container {
+      position: absolute;
+      z-index: 15;
+      cursor: move;
+      user-select: none;
+      border: 2px dashed transparent;
+      padding: 4px;
+    }
+    .inserted-table-container.selected {
+      border-color: var(--panel-accent) !important;
+      outline: 1px dashed var(--accent-primary);
+    }
+    .custom-editable-table {
+      border-collapse: collapse;
+      background: #ffffff;
+      width: 100%;
+    }
+    .custom-editable-table th, .custom-editable-table td {
+      border: 1px solid #0f172a;
+      padding: 6px 10px;
+      text-align: center;
+      outline: none;
+      min-width: 40px;
+      cursor: text;
+    }
+
+    .watermark-overlay {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-size: 4rem;
+      font-weight: 900;
+      color: var(--accent-primary);
+      opacity: 0.12;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px dashed transparent;
+      padding: 10px;
+    }
+    .watermark-overlay.active { display: block; }
+
+    .inserted-shape {
+      position: absolute;
+      z-index: 15;
+      cursor: move;
+      user-select: none;
+      touch-action: none;
+      border: 2px dashed transparent;
+      padding: 4px;
+      display: inline-block;
+      top: 300px;
+      left: 300px;
+    }
+    .inserted-shape svg { display: block; width: 100%; height: 100%; pointer-events: none; }
+
+    .inserted-shape.selected, .watermark-overlay.selected, .imported-img.selected, .imported-svg.selected, .inserted-table-container.selected, .workspace-top-bar.selected {
+      border-color: var(--panel-accent) !important;
+      outline: 1px dashed var(--accent-primary);
+    }
+
+    .imported-img, .imported-svg {
+      position: absolute;
+      top: 200px;
+      left: 100px;
+      width: 250px;
+      height: auto;
+      z-index: 5;
+      cursor: pointer;
+      border: 2px dashed transparent;
+      user-select: none;
+      touch-action: none;
+      background: transparent !important;
+    }
+
+    .a4-header {
+      border: 2px solid var(--accent-primary);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .a4-header-row { display: flex; gap: 15px; }
+
+    .a4-header input {
+      border: none;
+      border-bottom: 1px dotted #94a3b8;
+      font-weight: 600;
+      outline: none;
+      padding: 4px;
+      background: transparent;
+      color: #0f172a;
+      flex: 1;
+    }
+
+    .a4-header input.author-field {
+      font-weight: 700;
+      color: var(--accent-primary);
+    }
+
+    .draggable-canvas-container {
+      position: absolute;
+      top: 180px;
+      left: 50px;
+      width: 694px;
+      height: 300px;
+      background: transparent;
+      border: 2px dashed var(--accent-primary);
+      border-radius: 8px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      touch-action: none;
+    }
+
+    .canvas-handle {
+      background: var(--accent-primary);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: move;
+      user-select: none;
+    }
+
+    .tool-badge {
+      background: rgba(255,255,255,0.25);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    canvas {
+      display: block;
+      cursor: crosshair;
+      background: transparent;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .a4-editor {
+      width: 100%;
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 1.1rem;
+      line-height: 28px;
+      color: #0f172a;
+      z-index: 1;
+      cursor: text;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 800px;
+    }
+
+    .control-panel-fixed {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--panel-bg);
+      border-top: 2px solid var(--panel-border);
+      padding: 10px 15px;
+      z-index: 1000;
+      color: var(--panel-text);
+      box-shadow: 0 -10px 25px rgba(0,0,0,0.5);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--panel-accent);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .panel-box {
+      background: var(--panel-card);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .step-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .step-btn {
+      background: #2a2a2a;
+      color: #fff;
+      border: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-group-row { display: flex; gap: 4px; align-items: center; }
+
+    .ctrl-btn {
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 32px;
+      text-align: center;
+    }
+
+    .ctrl-btn:active { background: var(--panel-accent); color: #000; }
+
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 30px);
+      grid-template-rows: repeat(2, 28px);
+      gap: 3px;
+      justify-content: center;
+    }
+
+    @media print {
+      @page { size: A4 portrait; margin: 0; }
+      body { background: #ffffff !important; padding: 0 !important; margin: 0 !important; overflow: visible !important; }
+      header, .sidebar, .control-panel-fixed, .canvas-handle, .workspace-top-bar { display: none !important; }
+      .zoom-viewport { padding: 0 !important; margin: 0 !important; overflow: visible !important; display: block !important; }
+      .workspace-scaler { transform: none !important; padding: 0 !important; margin: 0 !important; gap: 0 !important; width: 100% !important; }
+      .a4-container { box-shadow: none !important; border-radius: 0 !important; width: 100% !important; min-height: 100vh !important; margin: 0 !important; padding: 15mm 15mm !important; page-break-after: always; break-after: page; }
+    }
+  </style>
+</head>
+<body data-theme="default">
+
+  <!-- Bloc de la variable x déplaçable -->
+  <div class="workspace-top-bar" id="floatingBar">
+    <span class="workspace-top-bar-title">📌 Variable</span>
+    <div class="color-selector-group">
+      <button class="color-select-btn black" onclick="setXColor('black', this)" title="Noir"></button>
+      <button class="color-select-btn blue active" onclick="setXColor('blue', this)" title="Bleu"></button>
+    </div>
+    <button class="btn-inserer-x" onclick="insererVariableXSpeciale()">
+      Insérer <span class="variable-x-speciale" id="previewXColor" style="color: var(--accent-primary);">x</span>
+    </button>
+  </div>
+
+  <header>
+    <div class="header-left">
+      <button class="burger-btn" id="burgerBtn" onclick="toggleSidebar(event)">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="logo">📄 ATHEMIX37 ESPACE CRÉATION</div>
+    </div>
+    
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="applyZoom(-0.1)">🔍 -</button>
+      <span class="zoom-display" id="zoomLevel">100%</span>
+      <button class="zoom-btn" onclick="applyZoom(0.1)">🔍 +</button>
+      <button class="zoom-btn" onclick="resetZoom()">🎯 Ajuster</button>
+    </div>
+
+    <div class="top-actions">
+      <button class="btn-3d" onclick="imprimerPDF()">🖨️ PDF</button>
+      <button class="btn-3d" onclick="sauvegarderEtatActuel()" style="color: var(--accent-primary);">💾 Sauver</button>
+    </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="menu-group" style="border-left-color: var(--panel-accent);">
+      <div class="menu-title">💾 Gestion des Épreuves & Sauvegardes</div>
+      <input type="text" id="nomEpreuveInput" class="custom-input" placeholder="Nom de l'épreuve..." value="Épreuve 1">
+      <button class="btn-3d" onclick="sauvegarderEtatActuel()" style="color: var(--accent-primary);">💾 Sauvegarder l'épreuve active</button>
+      <button class="btn-3d" onclick="creerNouvelleFeuille()">➕ Nouvelle feuille (Vierge)</button>
+      <label style="font-size: 0.75rem; font-weight: 600; margin: 6px 0 4px; display: block; color: var(--text-color);">Mes épreuves sauvegardées :</label>
+      <select class="custom-select" id="selectSauvegardes" onchange="chargerEpreuveSelectionnee(this.value)">
+        <option value="" disabled selected>-- Choisir une épreuve sauvegardée --</option>
+      </select>
+      <button class="btn-3d" onclick="supprimerEpreuveActuelle()" style="color: #ef4444;">🗑️ Supprimer cette sauvegarde</button>
+    </div>
+
+    <!-- OPTION : Importation PDF depuis le stockage du téléphone -->
+    <div class="menu-group" style="border-left-color: var(--panel-accent);">
+      <div class="menu-title">📂 Reprendre un Fichier PDF</div>
+      <label style="font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; display: block; color: var(--text-color);">Importer un PDF depuis le stockage :</label>
+      <input type="file" id="pdfLoader" accept="application/pdf" class="custom-input" onchange="importerFichierPDF(event)">
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">✍️ Formatage Texte & Titres</div>
+      <div class="btn-inline-group">
+        <button class="btn-3d" onclick="formatText('bold')" title="Gras"><b>B</b></button>
+        <button class="btn-3d" onclick="formatText('italic')" title="Italique"><i>I</i></button>
+        <button class="btn-3d" onclick="formatText('underline')" title="Souligné"><u>U</u></button>
+        <button class="btn-3d" onclick="formatText('strikeThrough')" title="Barré"><s>S</s></button>
+      </div>
+
+      <div class="color-picker-row">
+        <label for="textColorPicker">🎨 Couleur Texte / Titre :</label>
+        <input type="color" id="textColorPicker" value="#2563eb" onchange="applyTextColor(this.value)">
+      </div>
+
+      <div class="color-picker-row">
+        <label for="bgColorPicker">🖍️ Surligner / Fond :</label>
+        <input type="color" id="bgColorPicker" value="#fef08a" onchange="applyBgColor(this.value)">
+      </div>
+
+      <select class="custom-select" onchange="applyFontSize(this.value)">
+        <option value="" disabled selected>-- Taille du texte / Titre --</option>
+        <option value="7">Grand Titre (H1)</option>
+        <option value="6">Sous-titre (H2)</option>
+        <option value="5">Titre de section (H3)</option>
+        <option value="3">Texte Normal</option>
+        <option value="1">Petit Texte / Annotation</option>
+      </select>
+
+      <select class="custom-select" onchange="applyFontName(this.value)">
+        <option value="" disabled selected>-- Police de caractères --</option>
+        <option value="Segoe UI">Segoe UI (Par défaut)</option>
+        <option value="Times New Roman">Times New Roman (Soutenu)</option>
+        <option value="Arial">Arial (Moderne)</option>
+        <option value="Courier New">Courier New (Code / Machine)</option>
+        <option value="Comic Sans MS">Comic Sans MS (Manuscrit)</option>
+        <option value="Georgia">Georgia (Élégant)</option>
+      </select>
+    </div>
+
+    <div class="menu-group" style="border-left-color: var(--panel-accent);">
+      <div class="menu-title">✒️ Cadres & Soulignements du Texte</div>
+      <label style="font-size: 0.75rem; font-weight: 600; margin-bottom: 6px; display: block; color: var(--text-color);">Sélectionnez un mot ou une phrase, puis cliquez :</label>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-frame-rect')">⬛ Cadre Rectangulaire</button>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-frame-solid')">🔲 Cadre en Trait Continu</button>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-frame-dashed')">⬚ Cadre Interrompu</button>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-frame-dotted')">⏹️ Cadre en Pointillé</button>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-double-solid')">⚌ Deux Traits Continus</button>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-double-dashed')">╍ Deux Traits Pointillés</button>
+      <button class="btn-3d" onclick="appliquerCadreTexte('text-double-interrupted')">☷ Deux Traits Interrompus</button>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">📄 Gestion Multi-Pages</div>
+      <button class="btn-3d" onclick="ajouterPageA4()">➕ Ajouter une Page A4</button>
+      <button class="btn-3d" onclick="setPaperStyle('lined')">📝 Feuille à Lignes</button>
+      <button class="btn-3d" onclick="setPaperStyle('blank')">⬜ Feuille Blanche Unie</button>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">🖼️ Importer un Schéma / Photo</div>
+      <input type="file" id="imageLoader" accept="image/*" class="custom-input" onchange="importerImage(event)">
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">📐 Importer un Repère Autonome</div>
+      <input type="file" id="repereLoader" accept="image/svg+xml,.svg" class="custom-input" onchange="importerRepereAutonome(event)">
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">🛡️ Filigrane (Facultatif)</div>
+      <button class="btn-3d" onclick="toggleWatermark(true)" style="color: var(--accent-primary);">➕ Ajouter Filigrane</button>
+      <button class="btn-3d" onclick="toggleWatermark(false)" style="color: #ef4444;">🗑️ Masquer / Supprimer</button>
+      <input type="text" class="custom-input" id="watermarkInput" placeholder="Texte du filigrane..." value="CORRECTION OFFICIELLE" oninput="updateWatermarkText()">
+      <input type="color" id="watermarkColor" value="#2563eb" class="custom-input" style="height:40px; padding:2px;" onchange="updateWatermarkColor()">
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title menu-title-toggle" onclick="toggleShapesAccordion()">
+        <span>📐 Outils de Schéma & Tracé</span>
+        <span id="accordionArrow">▼</span>
+      </div>
+
+      <div class="shapes-accordion-content" id="shapesAccordion">
+        <div class="shape-card-item" onclick="selectShapeTool('line')"><div class="shape-card-icon">📏</div><div>Trait Plein</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('dashed')"><div class="shape-card-icon">┈</div><div>Pointillés</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('dashdot')"><div class="shape-card-icon">∿</div><div>Trait Mixte</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('arrow')"><div class="shape-card-icon">➔</div><div>Flèche</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('double_arrow')"><div class="shape-card-icon">↔</div><div>Double Flèche</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('curve')"><div class="shape-card-icon">↪</div><div>Ligne Courbe</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('freehand')"><div class="shape-card-icon">✏️</div><div>Dessin Libre</div></div>
+
+        <div class="shape-card-item" onclick="selectShapeTool('rect')"><div class="shape-card-icon">🔲</div><div>Rectangle</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('round_rect')"><div class="shape-card-icon">▢</div><div>Rect. Arrondi</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('circle')"><div class="shape-card-icon">⚪</div><div>Cercle / Oval</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('triangle')"><div class="shape-card-icon">🔺</div><div>Triangle</div></div>
+        <div class="shape-card-item" onclick="selectShapeTool('diamond')"><div class="shape-card-icon">🔷</div><div>Losange</div></div>
+      </div>
+
+      <select class="custom-select" id="toolSelect" onchange="selectShapeTool(this.value)">
+        <option value="line">📏 Trait Plein Continu</option>
+        <option value="dashed">┈ Trait Pointillé</option>
+        <option value="arrow">➔ Flèche Simple</option>
+        <option value="rect">🔲 Rectangle / Carré</option>
+        <option value="circle">⚪ Cercle / Ellipse</option>
+      </select>
+      <button class="btn-3d" onclick="effacerCanvas()" style="color: #ef4444;">🗑️ Vider le Dessin</button>
+      <button class="btn-3d" onclick="supprimerElementSelectionne()" style="color: #ef4444;">❌ Supprimer Forme Sélectionnée</button>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">📊 Insertion Tableaux Personnalisés</div>
+      <div style="display: flex; gap: 8px; margin-bottom: 6px;">
+        <input type="number" id="customRows" class="custom-input" placeholder="Lignes" value="3" min="1" max="20" style="margin-bottom:0;">
+        <input type="number" id="customCols" class="custom-input" placeholder="Colonnes" value="3" min="1" max="20" style="margin-bottom:0;">
+      </div>
+      <button class="btn-3d" onclick="insererTableauPersonnalise()">➕ Insérer mon Tableau</button>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">🔢 Tous les Symboles Math & Physique</div>
+      <select class="custom-select" onchange="insererSymbolSelect(this)">
+        <option value="" disabled selected>-- Insérer un symbole (Complet) --</option>
+        <optgroup label="Ensembles et nombres">
+          <option value="ℕ">ℕ : ensemble des nombres naturels</option>
+          <option value="ℤ">ℤ : ensemble des entiers</option>
+          <option value="ℚ">ℚ : ensemble des nombres rationnels</option>
+          <option value="ℝ">ℝ : ensemble des nombres réels</option>
+          <option value="ℂ">ℂ : ensemble des nombres complexes</option>
+          <option value="𝒫(A)">𝒫(A) : ensemble des parties de A</option>
+          <option value="∅">∅ : ensemble vide</option>
+          <option value="A ∪ B">A ∪ B : union d'ensembles</option>
+          <option value="A ∩ B">A ∩ B : intersection d'ensembles</option>
+          <option value="A \ B">A \ B (ou A ∖ B) : différence d'ensembles / privé de (petit)</option>
+          <option value="∖">∖ : petit symbole oblique de privé de (compact)</option>
+          <option value="A^c">A^c : complémentaire de A</option>
+          <option value="A × B">A × B : produit cartésien</option>
+        </optgroup>
+        <optgroup label="Relations et appartenance">
+          <option value="∈">∈ : appartient à</option>
+          <option value="∉">∉ : n'appartient pas à</option>
+          <option value="⊂">⊂ : est inclus dans</option>
+          <option value="⊄">⊄ : n'est pas inclus dans</option>
+          <option value="⊃">⊃ : contient (ou égal)</option>
+          <option value="=">= : égal à</option>
+          <option value="≠">≠ : différent de</option>
+          <option value="<">&lt; : strictement inférieur à</option>
+          <option value="≤">≤ : inférieur ou égal à</option>
+          <option value=">">&gt; : strictement supérieur à</option>
+          <option value="≥">≥ : supérieur ou égal à</option>
+          <option value="≈">≈ : approximation</option>
+          <option value="≡">≡ : équivalent à</option>
+          <option value="⇒">⇒ : implication</option>
+          <option value="⇔">⇔ : équivalence</option>
+        </optgroup>
+        <optgroup label="Quantificateurs et logique">
+          <option value="∀">∀ : pour tout</option>
+          <option value="∃">∃ : il existe</option>
+          <option value="¬">¬ : non</option>
+          <option value="∧">∧ : et</option>
+          <option value="∨">∨ : ou</option>
+          <option value="→">→ : implique</option>
+          <option value="↔">↔ : équivalent à</option>
+          <option value="∴">∴ : donc, par conséquent</option>
+          <option value="∵">∵ : car, parce que</option>
+          <option value="()">() : parenthèses</option>
+          <option value="[]">[] : crochet</option>
+          <option value="{}">{} : accolade</option>
+        </optgroup>
+        <optgroup label="Fonctions et notations">
+          <option value="f(x)">f(x) : fonction</option>
+          <option value="f ∘ g">f ∘ g : composition de fonctions</option>
+          <option value="f^-1">f^-1 : fonction inverse</option>
+          <option value="D_f">D_f : domaine de définition</option>
+          <option value="Im(f)">Im(f) : image d'une fonction</option>
+          <option value="lim f(x)">lim f(x) : limite</option>
+          <option value="f'(x)">f'(x) : dérivée</option>
+          <option value="f''(x)">f''(x) : dérivée seconde</option>
+          <option value="∫">∫ : intégrale</option>
+          <option value="∫_a^b">∫_a^b : intégrale définie</option>
+          <option value="∑">∑ : somme (sigma)</option>
+          <option value="∏">∏ : produit (pi)</option>
+        </optgroup>
+        <optgroup label="Géométrie">
+          <option value="∠">∠ : angle</option>
+          <option value="△">△ : triangle</option>
+          <option value="□">□ : carré</option>
+          <option value="◯">◯ : cercle</option>
+          <option value="⊙">⊙ : cercle (centre)</option>
+          <option value="⊥">⊥ : perpendiculaire</option>
+          <option value="∥">∥ : parallèle</option>
+          <option value="=======">=== : égalité de segments</option>
+          <option value="≈">≈ : approximativement égal</option>
+          <option value="[AB]">[AB] : segment [AB]</option>
+          <option value="(AB)">(AB) : droite</option>
+          <option value="AB">AB : vecteur</option>
+          <option value="AB (longueur)">AB : longueur</option>
+          <option value="S">S : aire</option>
+          <option value="V">V : volume</option>
+        </optgroup>
+        <optgroup label="Opérations mathématiques">
+          <option value="+">+ : addition</option>
+          <option value="-">- : soustraction</option>
+          <option value="×">× : multiplication</option>
+          <option value="÷">÷ : division</option>
+          <option value="·">· : produit scalaire</option>
+          <option value="∧">∧ : produit vectoriel</option>
+          <option value="^">^ : puissance</option>
+          <option value="√">√ : racine carrée</option>
+          <option value="∛">∛ : racine cubique</option>
+          <option value="∜">∜ : racine n-ième</option>
+          <option value="|x|">|x| : valeur absolue</option>
+          <option value="%">% : pourcentage</option>
+        </optgroup>
+        <optgroup label="Symboles spécifiques">
+          <option value="Δ">Δ : delta / discriminant</option>
+          <option value="Σ">Σ : somme</option>
+          <option value="Π">Π : produit</option>
+          <option value="∝">∝ : proportionnel à</option>
+          <option value="∞">∞ : infini</option>
+          <option value="≈">≈ : approximation</option>
+          <option value="≃">≃ : équivalent</option>
+          <option value="≠">≠ : différent de</option>
+          <option value="≤">≤ : inférieur ou égal</option>
+          <option value="≥">≥ : supérieur ou égal</option>
+          <option value="∓">∓ : plus ou moins</option>
+          <option value="∇">∇ : nabla (gradient)</option>
+          <option value="d/dx">d/dx : dérivée (notation opérateur)</option>
+        </optgroup>
+        <optgroup label="Trigonométrie">
+          <option value="sin">sin : sinus</option>
+          <option value="cos">cos : cosinus</option>
+          <option value="tan">tan : tangente</option>
+          <option value="cot">cot : cotangente</option>
+          <option value="sec">sec : sécante</option>
+          <option value="csc">csc : cosécante</option>
+          <option value="π">π : pi (≈ 3,14159...)</option>
+          <option value="°">° : degré</option>
+          <option value="rad">rad : radian</option>
+          <option value="sin² + cos² = 1">sin² + cos² = 1 : au carré</option>
+          <option value="tan⁻¹">tan⁻¹ : arc tangente</option>
+          <option value="sin⁻¹">sin⁻¹ : arc sinus</option>
+        </optgroup>
+        <optgroup label="Calcul différentiel et intégral">
+          <option value="df/dy">df/dy : différentiel</option>
+          <option value="dy/dx">dy/dx : dérivée</option>
+          <option value="d²y/dx²">d²y/dx² : dérivée seconde</option>
+          <option value="∫ ... dx">∫ : intégrale indéfinie</option>
+          <option value="∫_a^b ... dx">∫ : intégrale définie</option>
+          <option value="∂f/∂x">∂f/∂x : dérivée partielle</option>
+          <option value="∇f">∇f : gradient</option>
+          <option value="Δ (laplacien)">Δ : laplacien</option>
+          <option value="d">d : élément différentiel</option>
+          <option value="dx">dx : élément différentiel (variable)</option>
+        </optgroup>
+        <optgroup label="Physique – Grandeurs et constantes">
+          <option value="m">m : masse</option>
+          <option value="t">t : temps</option>
+          <option value="x, y, z">x, y, z : position (coordonnées)</option>
+          <option value="v">v : vitesse</option>
+          <option value="a">a : accélération</option>
+          <option value="F">F : force</option>
+          <option value="E">E : énergie</option>
+          <option value="P">P : puissance / pression</option>
+          <option value="ρ">ρ : densité</option>
+          <option value="T">T : température</option>
+          <option value="Q">Q : charge électrique</option>
+          <option value="V">V : potentiel électrique</option>
+          <option value="g">g : accélération de la pesanteur</option>
+          <option value="G">G : constante de gravitation</option>
+          <option value="h">h : constante de Planck</option>
+          <option value="c">c : vitesse de la lumière</option>
+          <option value="k_B">k_B : constante de Boltzmann</option>
+          <option value="R">R : constante des gaz parfaits</option>
+          <option value="e">e : charge élémentaire</option>
+          <option value="N_A">N_A : nombre d'Avogadro</option>
+          <option value="ε_0">ε_0 : permittivité du vide</option>
+          <option value="μ_0">μ_0 : perméabilité du vide</option>
+        </optgroup>
+        <optgroup label="Unités (SI)">
+          <option value="m (mètre)">m : mètre (longueur)</option>
+          <option value="kg">kg : kilogramme (masse)</option>
+          <option value="s">s : seconde (temps)</option>
+          <option value="A">A : ampère (courant électrique)</option>
+          <option value="K">K : kelvin (température)</option>
+          <option value="mol">mol : mole (quantité de matière)</option>
+          <option value="cd">cd : candela (intensité lumineuse)</option>
+        </optgroup>
+        <optgroup label="Mécanique">
+          <option value="v (méca)">v : vitesse</option>
+          <option value="a (méca)">a : accélération</option>
+          <option value="F (méca)">F : force</option>
+          <option value="P (méca)">P : quantité de mouvement</option>
+          <option value="E_c">E_c : énergie cinétique</option>
+          <option value="E_p">E_p : énergie potentielle</option>
+          <option value="W">W : travail</option>
+          <option value="τ">τ : couple</option>
+          <option value="I (méca)">I : moment d'inertie</option>
+          <option value="L">L : moment cinétique</option>
+        </optgroup>
+        <optgroup label="Électromagnétisme">
+          <option value="E (élec)">E : champ électrique</option>
+          <option value="B">B : champ magnétique</option>
+          <option value="Φ">Φ : flux magnétique</option>
+          <option value="U">U : tension</option>
+          <option value="I (élec)">I : intensité du courant</option>
+          <option value="R (élec)">R : résistance</option>
+          <option value="C">C : capacité</option>
+          <option value="L (élec)">L : inductance</option>
+          <option value="ε">ε : force électromotrice</option>
+          <option value="f (élec)">f : fréquence</option>
+        </optgroup>
+        <optgroup label="Autres symboles courants">
+          <option value="%">% : pourcentage</option>
+          <option value="‰">‰ : pour mille</option>
+          <option value="′">′ : minute (angle)</option>
+          <option value="″">″ : seconde (angle)</option>
+          <option value="→ (vecteur)">→ : vecteur</option>
+          <option value="∶">∶ : ratio</option>
+          <option value="{}">{} : ensemble</option>
+          <option value="()">() : fonction</option>
+          <option value="[...]">[...] : suite</option>
+        </optgroup>
+        <optgroup label="Notations spéciales">
+          <option value="(a, b)">(a, b) : intervalle ouvert</option>
+          <option value="[a, b]">[a, b] : intervalle fermé</option>
+          <option value="[a, b)">[a, b) : intervalle semi-ouvert</option>
+          <option value="(a, b]">(a, b] : intervalle semi-ouvert</option>
+          <option value="ℓ">ℓ : droite</option>
+          <option value="(P)">(P) : plan</option>
+          <option value="(S)">(S) : solide</option>
+          <option value="∀ε > 0">∀ε > 0 : pour tout epsilon positif</option>
+          <option value="∃δ > 0">∃δ > 0 : il existe un delta positif</option>
+        </optgroup>
+      </select>
+      <button class="btn-3d" onclick="insererFractionBloc()">➕ Insérer Fraction (Barre Horizontale)</button>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-title">🎨 Thèmes</div>
+      <button class="btn-3d" onclick="setTheme('default')">💧 Bleu Doux</button>
+      <button class="btn-3d" onclick="setTheme('mint')">🍃 Menthe Léger</button>
+      <button class="btn-3d" onclick="setTheme('lavender')">🌸 Lavande</button>
+      <button class="btn-3d" onclick="setTheme('sand')">🌾 Sable</button>
+    </div>
+  </aside>
+
+  <div class="zoom-viewport" id="zoomViewport">
+    <div class="workspace-scaler" id="workspaceScaler">
+
+      <div class="a4-container lined" id="a4Page">
+        
+        <div class="watermark-overlay" id="watermark" onclick="selectElement(this)">CORRECTION OFFICIELLE</div>
+
+        <div class="a4-header">
+          <div class="a4-header-row">
+            <input type="text" placeholder="Matière (ex: Physique / Dessin Technique)">
+            <input type="text" placeholder="Classe">
+            <input type="text" placeholder="Date: JJ/MM/AAAA">
+          </div>
+          <div class="a4-header-row">
+            <input type="text" class="author-field" placeholder="Correcteur / Auteur">
+          </div>
+        </div>
+
+        <div class="draggable-canvas-container" id="draggableCanvas">
+          <div class="canvas-handle" id="canvasHandle">
+            <span>✋ Déplacer le cadran</span>
+            <span class="tool-badge" id="toolBadge">Outil : Trait Plein</span>
+            <span style="cursor: pointer; font-size: 1rem;" onclick="masquerCadran()">❌</span>
+          </div>
+          <canvas id="schemaCanvas"></canvas>
+        </div>
+
+        <div class="a4-editor" id="editor" contenteditable="true" onclick="positionnerCurseurDirect(event)">Toucher ici pour commencer à écrire...</div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div class="control-panel-fixed">
+    <div class="panel-header">
+      <span>🎮 PANNEAU DE CONTRÔLE ACTIF</span>
+      <span style="font-size:0.7rem; color:#94a3b8;">Ajustez vos éléments avec précision</span>
+    </div>
+
+    <div class="panel-grid">
+      <div class="panel-box">
+        <div class="step-control">
+          Pas: <button class="step-btn" onclick="adjStep('move', -1)">-</button>
+          <span id="step-move">3</span>
+          <button class="step-btn" onclick="adjStep('move', 1)">+</button>
+        </div>
+        <div class="dpad">
+          <div></div>
+          <button class="ctrl-btn" onclick="moveElement(0, -1)">▲</button>
+          <div></div>
+          <button class="ctrl-btn" onclick="moveElement(-1, 0)">◄</button>
+          <button class="ctrl-btn" onclick="moveElement(0, 1)">▼</button>
+          <button class="ctrl-btn" onclick="moveElement(1, 0)">►</button>
+        </div>
+      </div>
+
+      <div class="panel-box">
+        <div class="step-control">
+          Pas (Larg): <button class="step-btn" onclick="adjStep('width', -1)">-</button>
+          <span id="step-width">4</span>
+          <button class="step-btn" onclick="adjStep('width', 1)">+</button>
+        </div>
+        <div class="btn-group-row">
+          <button class="ctrl-btn" onclick="resizeWidth(-1)">—</button>
+          <button class="ctrl-btn">↔</button>
+          <button class="ctrl-btn" onclick="resizeWidth(1)">+</button>
+        </div>
+      </div>
+
+      <div class="panel-box">
+        <div class="step-control">
+          Pas (Haut): <button class="step-btn" onclick="adjStep('height', -1)">-</button>
+          <span id="step-height">4</span>
+          <button class="step-btn" onclick="adjStep('height', 1)">+</button>
+        </div>
+        <div class="btn-group-row">
+          <button class="ctrl-btn" onclick="resizeHeight(-1)">—</button>
+          <button class="ctrl-btn">↕</button>
+          <button class="ctrl-btn" onclick="resizeHeight(1)">+</button>
+        </div>
+      </div>
+
+      <div class="panel-box">
+        <div class="step-control">
+          Pas (Opac): <button class="step-btn" onclick="adjStep('opac', -1)">-</button>
+          <span id="step-opac">5</span>
+          <button class="step-btn" onclick="adjStep('opac', 1)">+</button>
+        </div>
+        <div class="btn-group-row">
+          <button class="ctrl-btn" onclick="adjustOpacity(-1)">—</button>
+          <button class="ctrl-btn">☉</button>
+          <button class="ctrl-btn" onclick="adjustOpacity(1)">+</button>
+        </div>
+      </div>
+
+      <div class="panel-box">
+        <div class="step-control">
+          Pas (Rot): <button class="step-btn" onclick="adjStep('rot', -1)">-</button>
+          <span id="step-rot">2</span>
+          <button class="step-btn" onclick="adjStep('rot', 1)">+</button>
+        </div>
+        <div class="btn-group-row">
+          <button class="ctrl-btn" onclick="rotateElement(-1)">⟲</button>
+          <button class="ctrl-btn" onclick="resetTransforms()">⚙</button>
+          <button class="ctrl-btn" onclick="rotateElement(1)">⟳</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const burgerBtn = document.getElementById('burgerBtn');
+    const zoomViewport = document.getElementById('zoomViewport');
+    const workspaceScaler = document.getElementById('workspaceScaler');
+    const zoomLevelDisplay = document.getElementById('zoomLevel');
+    const canvas = document.getElementById('schemaCanvas');
+    const ctx = canvas.getContext('2d');
+    const dragContainer = document.getElementById('draggableCanvas');
+    const dragHandle = document.getElementById('canvasHandle');
+    const toolBadge = document.getElementById('toolBadge');
+
+    let selectedEl = null;
+    let currentXColorSetting = 'blue';
+
+    // Rendre le bloc de la variable x interactif et déplaçable comme les autres éléments
+    document.addEventListener("DOMContentLoaded", () => {
+      const floatingBar = document.getElementById('floatingBar');
+      if (floatingBar) {
+        makeElementInteractive(floatingBar);
+      }
+    });
+
+    // --- GESTION DU CHOIX DE COULEUR POUR LA VARIABLE X ---
+    function setXColor(colorType, btnElement) {
+      currentXColorSetting = colorType;
+      document.querySelectorAll('.color-select-btn').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      const preview = document.getElementById('previewXColor');
+      if (preview) {
+        preview.style.color = (colorType === 'blue') ? 'var(--accent-primary)' : '#0f172a';
+      }
+    }
+
+    // --- FONCTION D'INSERTION DE LA VARIABLE X MATHÉMATIQUE ---
+    function insererVariableXSpeciale() {
+      const sel = window.getSelection();
+      let editor = document.activeElement;
+      
+      if (!editor || !editor.hasAttribute('contenteditable')) {
+        editor = document.getElementById('editor');
+        editor.focus();
+      }
+
+      if (editor.innerText.trim() === "Toucher ici pour commencer à écrire...") {
+        editor.innerText = "";
+      }
+
+      const span = document.createElement('span');
+      span.className = 'variable-x-speciale';
+      span.textContent = 'x';
+      span.style.color = (currentXColorSetting === 'blue') ? 'var(--accent-primary)' : '#0f172a';
+
+      if (sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        if (editor.contains(range.commonAncestorContainer)) {
+          range.deleteContents();
+          range.insertNode(span);
+          
+          range.setStartAfter(span);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          return;
+        }
+      }
+
+      editor.appendChild(span);
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    // --- CORRECTION DU SYSTÈME DE SAUVEGARDE LOCALE ---
+    function chargerListeSauvegardes() {
+      const select = document.getElementById('selectSauvegardes');
+      select.innerHTML = '<option value="" disabled selected>-- Choisir une épreuve sauvegardée --</option>';
+      const keys = Object.keys(localStorage).filter(k => k.startsWith('athemix_epreuve_'));
+      keys.forEach(key => {
+        const nom = key.replace('athemix_epreuve_', '');
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = nom;
+        select.appendChild(opt);
+      });
+    }
+
+    function sauvegarderEtatActuel() {
+      const nomInput = document.getElementById('nomEpreuveInput').value.trim() || 'Épreuve sans nom';
+      const workspaceHTML = workspaceScaler.innerHTML;
+      const floatingBarHTML = document.getElementById('floatingBar').outerHTML;
+      const dataToSave = {
+        workspace: workspaceHTML,
+        floatingBar: floatingBarHTML
+      };
+      const cle = 'athemix_epreuve_' + nomInput;
+      try {
+        localStorage.setItem(cle, JSON.stringify(dataToSave));
+        chargerListeSauvegardes();
+        alert('Épreuve "' + nomInput + '" sauvegardée avec succès !');
+      } catch (e) {
+        alert('Erreur lors de la sauvegarde (stockage plein ?).');
+      }
+    }
+
+    function chargerEpreuveSelectionnee(key) {
+      if (!key) return;
+      const savedData = localStorage.getItem(key);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          if (parsed.workspace) {
+            workspaceScaler.innerHTML = parsed.workspace;
+          }
+          if (parsed.floatingBar) {
+            const oldBar = document.getElementById('floatingBar');
+            if (oldBar) oldBar.remove();
+            document.body.insertAdjacentHTML('beforeend', parsed.floatingBar);
+            const newBar = document.getElementById('floatingBar');
+            if (newBar) makeElementInteractive(newBar);
+          }
+        } catch(err) {
+          // Rétrocompatibilité ancien format brut
+          workspaceScaler.innerHTML = savedData;
+        }
+
+        document.querySelectorAll('.inserted-shape, .imported-img, .imported-svg, .inserted-table-container, .watermark-overlay, .workspace-top-bar').forEach(el => {
+          makeElementInteractive(el);
+        });
+        alert('Épreuve chargée avec succès !');
+      }
+    }
+
+    function supprimerEpreuveActuelle() {
+      const select = document.getElementById('selectSauvegardes');
+      const key = select.value;
+      if (!key) {
+        alert('Veuillez sélectionner une épreuve sauvegardée à supprimer.');
+        return;
+      }
+      if (confirm('Voulez-vous vraiment supprimer cette sauvegarde ?')) {
+        localStorage.removeItem(key);
+        chargerListeSauvegardes();
+        alert('Sauvegarde supprimée.');
+      }
+    }
+
+    function creerNouvelleFeuille() {
+      if (confirm('Créer une nouvelle feuille va réinitialiser l\'espace actuel. Êtes-vous sûr ?')) {
+        location.reload();
+      }
+    }
+
+    function appliquerCadreTexte(className) {
+      const selection = window.getSelection();
+      if (!selection.rangeCount || selection.isCollapsed) {
+        alert("Veuillez d'abord sélectionner un mot, un groupe de mots ou une phrase dans le texte.");
+        return;
+      }
+      const range = selection.getRangeAt(0);
+      const span = document.createElement('span');
+      span.className = className;
+      span.appendChild(range.extractContents());
+      range.insertNode(span);
+      selection.removeAllRanges();
+    }
+
+    const SVG_TEMPLATES = {
+      resistor: `<svg viewBox="0 0 100 40"><line x1="0" y1="20" x2="20" y2="20" stroke="#000" stroke-width="3"/><rect x="20" y="5" width="60" height="30" fill="none" stroke="#000" stroke-width="3"/><line x1="80" y1="20" x2="100" y2="20" stroke="#000" stroke-width="3"/></svg>`,
+      line: `<svg viewBox="0 0 120 20"><line x1="0" y1="10" x2="120" y2="10" stroke="#000" stroke-width="3"/></svg>`,
+      dashed: `<svg viewBox="0 0 120 20"><line x1="0" y1="10" x2="120" y2="10" stroke="#000" stroke-width="3" stroke-dasharray="6,6"/></svg>`,
+      arrow: `<svg viewBox="0 0 120 20"><defs><marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#000"/></marker></defs><line x1="0" y1="10" x2="110" y2="10" stroke="#000" stroke-width="3" marker-end="url(#arr)"/></svg>`,
+      rect: `<svg viewBox="0 0 100 60"><rect x="3" y="3" width="94" height="54" fill="none" stroke="#000" stroke-width="3"/></svg>`,
+      circle: `<svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="none" stroke="#000" stroke-width="3"/></svg>`
+    };
+
+    function toggleShapesAccordion() {
+      const accordion = document.getElementById('shapesAccordion');
+      const arrow = document.getElementById('accordionArrow');
+      accordion.classList.toggle('open');
+      arrow.textContent = accordion.classList.contains('open') ? '▲' : '▼';
+    }
+
+    function selectShapeTool(toolKey) {
+      document.querySelectorAll('.shape-card-item').forEach(card => card.classList.remove('active'));
+      setTool(toolKey);
+      document.getElementById('toolSelect').value = toolKey;
+
+      if (SVG_TEMPLATES[toolKey]) {
+        insererFormeInsee(toolKey);
+      } else {
+        afficherCadran();
+      }
+    }
+
+    function importerRepereAutonome(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(e.target.result, "image/svg+xml");
+          const svgEl = doc.querySelector("svg");
+          
+          if (svgEl) {
+            svgEl.style.width = "100%";
+            svgEl.style.height = "100%";
+            
+            const container = document.createElement('div');
+            container.className = 'imported-svg';
+            container.style.top = '220px';
+            container.style.left = '150px';
+            container.style.width = '300px';
+            container.appendChild(svgEl);
+
+            document.getElementById('a4Page').appendChild(container);
+            makeElementInteractive(container);
+            selectElement(container);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    async function importerFichierPDF(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const typedarray = new Uint8Array(e.target.result);
+
+        try {
+          const pdfDoc = await pdfjsLib.getDocument({ data: typedarray }).promise;
+          const workspace = document.getElementById('workspaceScaler');
+          workspace.innerHTML = ""; 
+
+          for (let i = 1; i <= pdfDoc.numPages; i++) {
+            const page = await pdfDoc.getPage(i);
+            const viewport = page.getViewport({ scale: 1.5 });
+
+            const pageContainer = document.createElement('div');
+            pageContainer.className = 'a4-container blank';
+            pageContainer.style.width = viewport.width + 'px';
+            pageContainer.style.height = viewport.height + 'px';
+
+            const canvasPDF = document.createElement('canvas');
+            canvasPDF.width = viewport.width;
+            canvasPDF.height = viewport.height;
+            canvasPDF.style.width = '100%';
+            canvasPDF.style.height = '100%';
+
+            pageContainer.appendChild(canvasPDF);
+            workspace.appendChild(pageContainer);
+
+            const context = canvasPDF.getContext('2d');
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+          }
+          alert("Fichier PDF importé avec succès depuis votre stockage !");
+        } catch (error) {
+          console.error("Erreur chargement PDF :", error);
+          alert("Impossible de lire ce fichier PDF.");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function insererTableauPersonnalise() {
+      const lignes = parseInt(document.getElementById('customRows').value) || 3;
+      const colonnes = parseInt(document.getElementById('customCols').value) || 3;
+      
+      const currentPage = document.getElementById('a4Page') || document.querySelector('.a4-container');
+      const container = document.createElement('div');
+      container.className = 'inserted-table-container';
+      
+      let tableHTML = `<table class="custom-editable-table">`;
+      for(let i=0; i<lignes; i++) {
+        tableHTML += `<tr>`;
+        for(let j=0; j<colonnes; j++) {
+          tableHTML += `<td contenteditable="true">Cel ${i+1},${j+1}</td>`;
+        }
+        tableHTML += `</tr>`;
+      }
+      tableHTML += `</table>`;
+      
+      container.innerHTML = tableHTML;
+      container.style.top = '300px';
+      container.style.left = '250px';
+
+      currentPage.appendChild(container);
+      makeElementInteractive(container);
+      selectElement(container);
+    }
+
+    function insererFormeInsee(toolKey) {
+      const currentPage = document.getElementById('a4Page') || document.querySelector('.a4-container');
+      const container = document.createElement('div');
+      container.className = 'inserted-shape';
+      container.innerHTML = SVG_TEMPLATES[toolKey] || SVG_TEMPLATES.rect;
+
+      container.style.width = '160px';
+      container.style.height = '120px';
+      container.style.top = '250px';
+      container.style.left = '320px';
+
+      currentPage.appendChild(container);
+      makeElementInteractive(container);
+      selectElement(container);
+    }
+
+    function makeElementInteractive(el) {
+      let isDragging = false;
+      let startTouchX = 0, startTouchY = 0;
+      let initialLeft = 0, initialTop = 0;
+
+      function onStart(e) {
+        selectElement(el);
+        isDragging = true;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        startTouchX = clientX;
+        startTouchY = clientY;
+        initialLeft = el.offsetLeft;
+        initialTop = el.offsetTop;
+        e.stopPropagation();
+      }
+
+      function onMove(e) {
+        if (!isDragging) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const dx = (clientX - startTouchX) / currentZoom;
+        const dy = (clientY - startTouchY) / currentZoom;
+
+        el.style.left = (initialLeft + dx) + 'px';
+        el.style.top = (initialTop + dy) + 'px';
+        e.preventDefault();
+      }
+
+      function onEnd() { isDragging = false; }
+
+      el.addEventListener('mousedown', onStart);
+      el.addEventListener('touchstart', onStart, { passive: false });
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchend', onEnd);
+    }
+
+    function supprimerElementSelectionne() {
+      if (selectedEl && (selectedEl.classList.contains('inserted-shape') || selectedEl.classList.contains('imported-img') || selectedEl.classList.contains('imported-svg') || selectedEl.classList.contains('inserted-table-container'))) {
+        selectedEl.remove();
+        selectedEl = null;
+      }
+    }
+
+    function formatText(command, value = null) { document.execCommand(command, false, value); }
+    function applyTextColor(color) { document.execCommand('foreColor', false, color); }
+    function applyBgColor(color) { document.execCommand('hiliteColor', false, color); }
+    function applyFontSize(size) { if(size) document.execCommand('fontSize', false, size); }
+    function applyFontName(font) { if(font) document.execCommand('fontName', false, font); }
+
+    function imprimerPDF() {
+      if (selectedEl) {
+        selectedEl.classList.remove('selected');
+        selectedEl = null;
+      }
+      window.print();
+    }
+
+    function positionnerCurseurDirect(e) {
+      const editor = e.currentTarget;
+      if (editor.innerText.trim() === "Toucher ici pour commencer à écrire...") {
+        editor.innerText = "";
+      }
+    }
+
+    function toggleSidebar(e) {
+      if (e) e.stopPropagation();
+      sidebar.classList.toggle('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (sidebar.classList.contains('open') && 
+          !sidebar.contains(e.target) && 
+          !burgerBtn.contains(e.target)) {
+        sidebar.classList.remove('open');
+      }
+    });
+
+    function toggleWatermark(show) {
+      const wm = document.getElementById('watermark');
+      if (wm) {
+        if (show) {
+          wm.classList.add('active');
+          makeElementInteractive(wm);
+          selectElement(wm);
+        } else {
+          wm.classList.remove('active');
+          wm.classList.remove('selected');
+          if (selectedEl === wm) selectedEl = null;
+        }
+      }
+    }
+
+    let currentZoom = 1.0;
+    const minZoom = 0.5;
+    const maxZoom = 3.0;
+
+    function updateZoomUI() {
+      workspaceScaler.style.transform = `scale(${currentZoom})`;
+      zoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+    }
+
+    function applyZoom(delta) {
+      currentZoom = Math.min(maxZoom, Math.max(minZoom, currentZoom + delta));
+      updateZoomUI();
+    }
+
+    function resetZoom() {
+      currentZoom = 1.0;
+      updateZoomUI();
+    }
+
+    window.addEventListener('load', () => {
+      resetZoom();
+      chargerListeSauvegardes();
+    });
+
+    let state = { x: 0, y: 0, fontSize: 64, opacity: 1, rotation: 0 };
+    let steps = { move: 3, width: 4, height: 4, opac: 5, rot: 2 };
+
+    function selectElement(el) {
+      document.querySelectorAll('.watermark-overlay, .imported-img, .imported-svg, .inserted-shape, .inserted-table-container, .workspace-top-bar').forEach(e => e.classList.remove('selected'));
+      selectedEl = el;
+      if (selectedEl) {
+        selectedEl.classList.add('selected');
+      }
+    }
+
+    function adjStep(type, val) {
+      steps[type] = Math.max(1, steps[type] + val);
+      document.getElementById('step-' + type).textContent = steps[type];
+    }
+
+    function moveElement(dx, dy) {
+      if (!selectedEl) return;
+      if (selectedEl.classList.contains('inserted-shape') || selectedEl.classList.contains('imported-img') || selectedEl.classList.contains('imported-svg') || selectedEl.classList.contains('inserted-table-container') || selectedEl.classList.contains('workspace-top-bar')) {
+        let currentL = selectedEl.offsetLeft || 0;
+        let currentT = selectedEl.offsetTop || 0;
+        selectedEl.style.left = (currentL + dx * steps.move) + 'px';
+        selectedEl.style.top = (currentT + dy * steps.move) + 'px';
+      }
+    }
+
+    function resizeWidth(dir) {
+      if (!selectedEl) return;
+      let currentW = selectedEl.clientWidth || 100;
+      selectedEl.style.width = Math.max(20, currentW + dir * steps.width * 5) + 'px';
+    }
+
+    function resizeHeight(dir) {
+      if (!selectedEl) return;
+      let currentH = selectedEl.clientHeight || 60;
+      selectedEl.style.height = Math.max(10, currentH + dir * steps.height * 5) + 'px';
+    }
+
+    function adjustOpacity(dir) {
+      if (!selectedEl) return;
+      let currentOp = parseFloat(window.getComputedStyle(selectedEl).opacity) || 1;
+      selectedEl.style.opacity = Math.min(1, Math.max(0.05, currentOp + (dir * steps.opac * 0.02)));
+    }
+
+    function rotateElement(dir) {
+      if (!selectedEl) return;
+      state.rotation += dir * steps.rot * 5;
+      selectedEl.style.transform = `rotate(${state.rotation}deg)`;
+    }
+
+    function resetTransforms() {
+      if (selectedEl) {
+        selectedEl.style.opacity = '1';
+        selectedEl.style.transform = 'none';
+      }
+    }
+
+    function importerImage(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = document.createElement('img');
+          img.src = event.target.result;
+          img.className = 'imported-img';
+          const targetPage = document.getElementById('a4Page') || document.querySelector('.a4-container');
+          targetPage.appendChild(img);
+          makeElementInteractive(img);
+          selectElement(img);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    let pageCount = 1;
+    function ajouterPageA4() {
+      pageCount++;
+      const newPage = document.createElement('div');
+      newPage.className = 'a4-container lined';
+      newPage.id = 'a4Page_' + pageCount;
+      newPage.innerHTML = `
+        <div class="a4-header">
+          <div class="a4-header-row">
+            <input type="text" placeholder="Matière">
+            <input type="text" placeholder="Classe">
+            <input type="text" placeholder="Page ${pageCount}">
+          </div>
+        </div>
+        <div class="a4-editor" contenteditable="true" onclick="positionnerCurseurDirect(event)"></div>
+      `;
+      workspaceScaler.appendChild(newPage);
+    }
+
+    function setPaperStyle(style) {
+      document.querySelectorAll('.a4-container').forEach(page => {
+        if (style === 'blank') {
+          page.classList.remove('lined'); page.classList.add('blank');
+        } else {
+          page.classList.remove('blank'); page.classList.add('lined');
+        }
+      });
+    }
+
+    function updateWatermarkText() {
+      const wm = document.getElementById('watermark');
+      if (wm) wm.textContent = document.getElementById('watermarkInput').value;
+    }
+
+    function updateWatermarkColor() {
+      const wm = document.getElementById('watermark');
+      if (wm) wm.style.color = document.getElementById('watermarkColor').value;
+    }
+
+    function setTheme(theme) { document.body.setAttribute('data-theme', theme); }
+    function masquerCadran() { 
+      const dc = document.getElementById('draggableCanvas');
+      if (dc) dc.style.display = 'none'; 
+    }
+    function afficherCadran() { 
+      const dc = document.getElementById('draggableCanvas');
+      if (dc) dc.style.display = 'flex'; 
+    }
+
+    function effacerCanvas() {
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function insererSymbolSelect(selectObj) {
+      if (selectObj.value) { insererTexte(selectObj.value); selectObj.selectedIndex = 0; }
+    }
+
+    function insererTexte(text) {
+      document.execCommand('insertText', false, text);
+    }
+
+    function insererFractionBloc() {
+      const sel = window.getSelection();
+      if (!sel.rangeCount) return;
+      const range = sel.getRangeAt(0);
+
+      const fracSpan = document.createElement('span');
+      fracSpan.className = 'math-frac';
+      
+      const numSpan = document.createElement('span');
+      numSpan.className = 'math-num';
+      numSpan.contentEditable = 'true';
+      numSpan.innerHTML = 'a';
+
+      const denSpan = document.createElement('span');
+      denSpan.className = 'math-den';
+      denSpan.contentEditable = 'true';
+      denSpan.innerHTML = 'b';
+
+      fracSpan.appendChild(numSpan);
+      fracSpan.appendChild(denSpan);
+
+      range.deleteContents();
+      range.insertNode(fracSpan);
+    }
+
+    let activeDrag = false, currentX = 0, currentY = 0, initialX = 0, initialY = 0;
+
+    if (dragHandle) {
+      dragHandle.addEventListener("mousedown", dragStart);
+      document.addEventListener("mouseup", dragEnd);
+      document.addEventListener("mousemove", drag);
+    }
+
+    function dragStart(e) {
+      initialX = e.clientX - currentX; initialY = e.clientY - currentY;
+      activeDrag = true;
+    }
+    function dragEnd() { activeDrag = false; }
+    function drag(e) {
+      if (activeDrag && dragContainer) {
+        e.preventDefault();
+        currentX = e.clientX - initialX; currentY = e.clientY - initialY;
+        dragContainer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+      }
+    }
+  </script>
+</body>
+</html>
